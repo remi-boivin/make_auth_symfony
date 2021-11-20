@@ -1,0 +1,22 @@
+dn: ou=People,dc=nebulae,dc=co
+objectClass: organizationalUnit
+objectClass: top
+ou: People
+
+
+dn: uid=joni,ou=People,dc=nebulae,dc=co
+givenName: Joni
+homeDirectory: /home/users/joni
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+uid: joni
+uidNumber: 1042
+gidNumber: 501
+userPassword: password
+loginShell: /bin/zsh
+mail: joni@nebulae.co
+sn: Administrateur
+cn: Joni admin
+displayName: Joni
+

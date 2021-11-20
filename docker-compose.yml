@@ -6,7 +6,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 192.168.1.0/24
+        - subnet: 192.168.0.0/24
 
 services:
     web:
@@ -15,7 +15,7 @@ services:
             - "8000:8080"
         networks:
           static-network:
-            ipv4_address: 192.168.1.5
+            ipv4_address: 192.168.0.5
         links:
             - database
         volumes:
@@ -29,43 +29,29 @@ services:
             MYSQL_DATABASE: 'portal'
         volumes:
             - mysqldata:/var/lib/mysql
-            - ./development/portalDBPopulator.sql:/docker-entrypoint-initdb.d/dump.sql
+            - ./portalDBPopulator.sql:/docker-entrypoint-initdb.d/dump.sql
         ports:
             - 3306:3306
         networks:
           static-network:
-            ipv4_address: 192.168.1.55
+            ipv4_address: 192.168.0.55
 
-    # ldap:
-    #     image: osixia/openldap:1.5.0
-    #     volumes:
-    #         - ./development/NebulaeLDAPPopulator.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/init.ldif
-    #         - ldapdata_var:/var/lib/ldap
-    #         - ldapdata_etc:/etc/ldap/slapd.d
-    #     command: [--copy-service,  --loglevel, debug]
-    #     environment:
-    #         LDAP_ORGANISATION: 'Nebulae'
-    #         LDAP_DOMAIN: 'nebulae.co'
-    #         LDAP_READONLY_USER: 'true'
-    #         LDAP_BASE_DN: 'dc=nebulae,dc=co'
-    #         LDAP_TLS: 'false'
-    #     networks:
-    #       static-network:
-    #         ipv4_address: 192.168.0.58
-
-###> doctrine/doctrine-bundle ###
-  database:
-    image: postgres:${POSTGRES_VERSION:-13}-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeMe}
-      POSTGRES_USER: ${POSTGRES_USER:-symfony}
-    volumes:
-      - db-data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
+    ldap:
+        image: osixia/openldap:1.5.0
+        volumes:
+            - ./NebulaeLDAPPopulator.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/init.ldif
+            - ldapdata_var:/var/lib/ldap
+            - ldapdata_etc:/etc/ldap/slapd.d
+        command: [--copy-service,  --loglevel, debug]
+        environment:
+            LDAP_ORGANISATION: 'Nebulae'
+            LDAP_DOMAIN: 'nebulae.co'
+            LDAP_READONLY_USER: 'true'
+            LDAP_BASE_DN: 'dc=nebulae,dc=co'
+            LDAP_TLS: 'false'
+        networks:
+          static-network:
+            ipv4_address: 192.168.0.58
 
 volumes:
     mysqldata: {}
@@ -73,7 +59,3 @@ volumes:
     ldapdata_etc: {}
 
 
-
-###> doctrine/doctrine-bundle ###
-  db-data:
-###< doctrine/doctrine-bundle ###
